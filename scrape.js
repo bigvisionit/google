@@ -4104,9 +4104,9 @@
     ];
 
     // GCID_index: 111 | PLZ_area_index: 3 | PLZ_index: 322
-    var GCID_index = 109;
-    var PLZ_area_index = 7;
-    var PLZ_index = 2;
+    var GCID_index = 111;
+    var PLZ_area_index = 0;
+    var PLZ_index = 0;
     var SCRIPT_RUNS = 0;
 
     if(typeof process.argv[2] === 'undefined') {
