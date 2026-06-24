@@ -4103,8 +4103,8 @@
         ]
     ];
 
-    // GCID_index: 111 | PLZ_area_index: 3 | PLZ_index: 322
-    var GCID_index = 111;
+    // GCID_index: 200 | PLZ_area_index: 0 | PLZ_index: 0
+    var GCID_index = 200;
     var PLZ_area_index = 0;
     var PLZ_index = 0;
     var SCRIPT_RUNS = 0;
@@ -4168,7 +4168,7 @@
         while (PLZ_VALUE = getNextPLZ()) {
             console.log('Script Run:', SCRIPT_RUNS, '| GCID_index:', GCID_index, '| PLZ_area_index:', PLZ_area_index, '| PLZ_index:', PLZ_index);
             
-            const nameSheet = `data/${GCID[GCID_index][0]}_${PLZ_VALUE}.csv`;
+            const nameSheet = `data/${GCID[GCID_index][0]}_${PLZ_VALUE}/${GCID[GCID_index][0]}_${PLZ_VALUE}.csv`;
             // https://www.google.com/maps/search/dentist/@36.3671965,-86.5156829,10z/data=!3m1!4b1?authuser=0&hl=en&entry=ttu
             const googleUrl = `https://www.google.com/maps/search/${GCID[GCID_index][0]}+in+${PLZ_VALUE}/@51.0468744,13.7455958,14z/data=!3m1!4b1?authuser=0&hl=en&entry=ttu`;
 
@@ -4314,6 +4314,9 @@
             const csvHeader = 'Name,Rating,Category,Address,Website,Phone,Url\n';
             const csvRows = results.map(r => `${r.name},${r.rating},${r.category},${r.address},${r.website},${r.phone},${r.url}`).join('\n');
             if (!(results.length === 1 && results[0].name.trim() === '')) {
+                if (!fs.existsSync(`data/${GCID[GCID_index][0]}_${PLZ_VALUE}`)) {
+                    fs.mkdirSync(`data/${GCID[GCID_index][0]}_${PLZ_VALUE}`);
+                }
                 fs.writeFileSync(nameSheet, csvHeader + csvRows);
             }
 
