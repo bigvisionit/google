@@ -4068,10 +4068,26 @@ async function processCSVFiles(folderName, fileBlock) {
     }
 }
 
-const CGID_INDEX_START = 1;
-const CGID_INDEX_END = 1;
+let CGID_INDEX_START = 1;
+let CGID_INDEX_END = 1;
 const CGID_MAX_SIZE = 0;  // Example: 1: 200, 2-n: 2 csv files per operation (0 = all files in one operation)
 const CGID_MAX_INDEX = 0;   // INDEX of BLOCK (CGID_MAX_SIZE > 0)
+
+if(typeof process.argv[2] === 'undefined') {
+    // do nothing...
+} else {
+    var paramList = process.argv[2].split(',');
+    if(typeof paramList[0] === 'undefined') {
+        // do nothing...
+    } else {
+        CGID_INDEX_START = paramList[0];
+        if(typeof paramList[1] === 'undefined') {
+            // do nothing...
+        } else {
+            CGID_INDEX_END = paramList[1];
+        }
+    }
+}
 
 if (!CGID_MAX_SIZE) {
     for (let cgidCategoryIndex = CGID_INDEX_START; cgidCategoryIndex <= CGID_INDEX_END; cgidCategoryIndex++) {
