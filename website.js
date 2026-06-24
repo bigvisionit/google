@@ -4087,6 +4087,22 @@ async function writeCsv({ rows, headers, baseURL }) {
 const CGID_INDEX_START = 1;
 const CGID_INDEX_END = 1;
 
+if(typeof process.argv[2] === 'undefined') {
+    // do nothing...
+} else {
+    var paramList = process.argv[2].split(',');
+    if(typeof paramList[0] === 'undefined') {
+        // do nothing...
+    } else {
+        CGID_INDEX_START = paramList[0];
+        if(typeof paramList[1] === 'undefined') {
+            // do nothing...
+        } else {
+            CGID_INDEX_END = paramList[1];
+        }
+    }
+}
+
 for (let cgidCategoryIndex = CGID_INDEX_START; cgidCategoryIndex <= CGID_INDEX_END; cgidCategoryIndex++) {
     processCsv(cgidCategoryIndex).then(writeCsv);
 }
