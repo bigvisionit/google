@@ -4166,7 +4166,7 @@
 
         console.time('Execution Time');
         while (PLZ_VALUE = getNextPLZ()) {
-            console.log('Script Run:', SCRIPT_RUNS, '| GCID_index:', GCID_index, '| PLZ_area_index:', PLZ_area_index, '| PLZ_index:', PLZ_index);
+            console.log('Script Run:', SCRIPT_RUNS, '| GCID_index:', GCID_index, '| PLZ_area_index:', PLZ_area_index, '| PLZ_index:', PLZ_index, '| ' + GCID_index + ',' + PLZ_area_index + ',' + PLZ_index);
             
             const nameSheet = `data/${GCID[GCID_index][0]}_${GCID_index}/${GCID[GCID_index][0]}_${PLZ_VALUE}.csv`;
             // https://www.google.com/maps/search/dentist/@36.3671965,-86.5156829,10z/data=!3m1!4b1?authuser=0&hl=en&entry=ttu
