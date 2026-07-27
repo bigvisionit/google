@@ -4103,8 +4103,8 @@
         ]
     ];
 
-    // GCID_index: 200 | PLZ_area_index: 0 | PLZ_index: 0
-    var GCID_index = 200;
+    // GCID_index: 2900 | PLZ_area_index: 0 | PLZ_index: 0
+    var GCID_index = 2900;
     var PLZ_area_index = 0;
     var PLZ_index = 0;
     var SCRIPT_RUNS = 0;
@@ -4163,9 +4163,11 @@
         // }
 
         let PLZ_VALUE = '';
+        let SCRIPT_FAILED = false;
 
         console.time('Execution Time');
-        while (PLZ_VALUE = getNextPLZ()) {
+        while (PLZ_VALUE = SCRIPT_FAILED ? PLZ_VALUE : getNextPLZ()) {
+            SCRIPT_FAILED = false;
             console.log('Script Run:', SCRIPT_RUNS, '| GCID_index:', GCID_index, '| PLZ_area_index:', PLZ_area_index, '| PLZ_index:', PLZ_index, '| ' + GCID_index + ',' + PLZ_area_index + ',' + PLZ_index);
             
             const nameSheet = `data/${GCID[GCID_index][0]}_${GCID_index}/${GCID[GCID_index][0]}_${PLZ_VALUE}.csv`;
@@ -4176,15 +4178,38 @@
             const page = await browser.newPage();
             
             // Navigate to Google Maps search page
-            await page.goto(googleUrl);
-            await page.waitForSelector('[role="main"]');
+            try { await page.goto(googleUrl); } catch (error) {
+                console.log(error);
+                SCRIPT_FAILED = true;
+                continue;
+            }
+
+            try { await page.waitForSelector('[role="main"]'); } catch (error) {
+                console.log(error);
+                SCRIPT_FAILED = true;
+                continue;
+            }
 
             const buttonRejectAll = await page.$('button[aria-label="Reject all"]');
             if (buttonRejectAll) {
                 await buttonRejectAll.click();
                 // Navigate to Google Maps search page again to ensure we are on the correct page after handling cookies
-                await page.goto(googleUrl);
-                await page.waitForSelector('[role="main"]');
+                
+                try {
+                    await page.goto(googleUrl);
+                } catch (error) {
+                    console.log(error);
+                    SCRIPT_FAILED = true;
+                    continue;
+                }
+
+                try {
+                    await page.waitForSelector('[role="main"]');
+                } catch (error) {
+                    console.log(error);
+                    SCRIPT_FAILED = true;
+                    continue;
+                }
             }
 
             // Scroll through the list to load all results
@@ -4303,11 +4328,17 @@
             const batchSize = 5; // Adjust batch size based on your system capability
             const results = [];
 
-            for (let i = 0; i < urls.length; i += batchSize) {
-                const batchUrls = urls.slice(i, i + batchSize);
-                const batchResults = await Promise.all(batchUrls.map(url => scrapePageData(url)));
-                results.push(...batchResults);
-                console.log(`Batch ${i / batchSize + 1} completed.`);
+            try {
+                for (let i = 0; i < urls.length; i += batchSize) {
+                    const batchUrls = urls.slice(i, i + batchSize);
+                    const batchResults = await Promise.all(batchUrls.map(url => scrapePageData(url)));
+                    results.push(...batchResults);
+                    console.log(`Batch ${i / batchSize + 1} completed.`);
+                }
+            }  catch (error) {
+                console.log(error);
+                SCRIPT_FAILED = true;
+                continue;
             }
 
             // Convert results to CSV format and write to file
