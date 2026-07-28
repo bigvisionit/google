@@ -4174,7 +4174,13 @@
             // https://www.google.com/maps/search/dentist/@36.3671965,-86.5156829,10z/data=!3m1!4b1?authuser=0&hl=en&entry=ttu
             const googleUrl = `https://www.google.com/maps/search/${GCID[GCID_index][0]}+in+${PLZ_VALUE}/@51.0468744,13.7455958,14z/data=!3m1!4b1?authuser=0&hl=en&entry=ttu`;
 
-            const browser = await chromium.launch({ headless: true });
+            let browser;
+            try { browser = await chromium.launch({ headless: true }); } catch (error) {
+                console.log(error);
+                SCRIPT_FAILED = true;
+                continue;
+            }
+            
             const page = await browser.newPage();
             
             // Navigate to Google Maps search page
@@ -4192,7 +4198,13 @@
 
             const buttonRejectAll = await page.$('button[aria-label="Reject all"]');
             if (buttonRejectAll) {
-                await buttonRejectAll.click();
+                try {
+                    await buttonRejectAll.click();
+                } catch (error) {
+                    console.log(error);
+                    SCRIPT_FAILED = true;
+                    continue;
+                }
                 // Navigate to Google Maps search page again to ensure we are on the correct page after handling cookies
                 
                 try {
