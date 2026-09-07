@@ -4296,6 +4296,12 @@
         }
     }
 
+    function sleep(ms) {
+        return new Promise((resolve) => {
+            setTimeout(resolve, ms);
+        });
+    }
+
     function getNextPLZ() {
         // Increase PLZ_area_index if no more PLZ
         if (typeof PLZ[PLZ_area_index][PLZ_index] === 'undefined') {
@@ -4334,6 +4340,9 @@
 
         console.time('Execution Time');
         while (PLZ_VALUE = SCRIPT_FAILED ? PLZ_VALUE : getNextPLZ()) {
+            if (SCRIPT_FAILED) {
+                await sleep(1000);
+            }
             SCRIPT_FAILED = false;
             console.log('Script Run:', SCRIPT_RUNS, '| GCID_index:', GCID_index, '| PLZ_area_index:', PLZ_area_index, '| PLZ_index:', PLZ_index, '| ' + GCID_index + ',' + PLZ_area_index + ',' + PLZ_index);
             
