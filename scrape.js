@@ -4305,7 +4305,7 @@
     function getNextPLZ() {
         // Increase PLZ_area_index if no more PLZ
         if (typeof PLZ[PLZ_area_index][PLZ_index] === 'undefined') {
-            if (PLZ_area_index < 9) {
+            if (PLZ_area_index < (PLZ.length - 1)) {
                 PLZ_area_index++;
                 PLZ_index = 0
             } else {
