@@ -8,6 +8,7 @@ const stringSimilarity = require('string-similarity');
 const NAME_COLUMN = 'Name'; // Change to the exact column name for names
 const ADDRESS_COLUMN = 'Address'; // Change to the exact column name for addresses
 const SIMILARITY_THRESHOLD = 0.90; // 90% match threshold
+const INPUT_FOLDER_BLOCK_NAME = '1001-1100';
 
 const GCID = [
     // 0 - 9 -----------------
@@ -3954,7 +3955,7 @@ function readCSV(filePath) {
 
 // Helper function to split files in blocks
 function splitFilesInBlocks(folderName) {
-    const INPUT_FOLDER = './data/' + folderName; // Change to your folder path
+    const INPUT_FOLDER = './data/' + INPUT_FOLDER_BLOCK_NAME + '/' + folderName; // Change to your folder path
     let fileBlocks = [];
     try {
         const files = fs.readdirSync(INPUT_FOLDER).filter(file => file.endsWith('.csv'));
@@ -3973,7 +3974,7 @@ function splitFilesInBlocks(folderName) {
 
 // Main processing function
 async function processCSVFiles(folderName, fileBlock) {
-    const INPUT_FOLDER = './data/' + folderName; // Change to your folder path
+    const INPUT_FOLDER = './data/' + INPUT_FOLDER_BLOCK_NAME + '/' + folderName; // Change to your folder path
     const OUTPUT_FILE = INPUT_FOLDER + (fileBlock ? '/csv' : '') + '/' + folderName + (fileBlock ? '_' + (CGID_MAX_INDEX + 1) : '') + '.csv';
     try {
         const files = fileBlock ? fileBlock : fs.readdirSync(INPUT_FOLDER).filter(file => file.endsWith('.csv'));
@@ -4068,8 +4069,8 @@ async function processCSVFiles(folderName, fileBlock) {
     }
 }
 
-let CGID_INDEX_START = 1;
-let CGID_INDEX_END = 1;
+let CGID_INDEX_START = 0;
+let CGID_INDEX_END = 0;
 const CGID_MAX_SIZE = 0;  // Example: 1: 200, 2-n: 2 csv files per operation (0 = all files in one operation)
 const CGID_MAX_INDEX = 0;   // INDEX of BLOCK (CGID_MAX_SIZE > 0)
 
