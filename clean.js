@@ -7,6 +7,7 @@ const fastcsv = require('fast-csv');
 const CATEGORY_COLUMN = 'Category'; // Change to the exact column name for categories
 const ADDRESS_COLUMN = 'Address'; // Change to the exact column name for addresses
 const WEBSITE_COLUMN = 'Website'; // Change to the exact column name for websites
+const INPUT_FOLDER_BLOCK_NAME = '3801-3891';
 
 const GCID = [
     // 0 - 9 -----------------
@@ -3953,7 +3954,7 @@ function readCSV(filePath) {
 
 // Helper function to split files in blocks
 function splitFilesInBlocks(folderName) {
-    const INPUT_FOLDER = './data/' + folderName; // Change to your folder path
+    const INPUT_FOLDER = './data/' + INPUT_FOLDER_BLOCK_NAME + '/' + folderName; // Change to your folder path
     let fileBlocks = [];
     try {
         const files = fs.readdirSync(INPUT_FOLDER).filter(file => file.endsWith('.csv'));
@@ -3995,7 +3996,7 @@ const foreign_countries = [
 
 // Main processing function
 async function processCSVFiles(folderName, fileBlock) {
-    const INPUT_FOLDER = './data/' + folderName; // Change to your folder path
+    const INPUT_FOLDER = './data/' + INPUT_FOLDER_BLOCK_NAME + '/' + folderName; // Change to your folder path
     const OUTPUT_FILE = INPUT_FOLDER + (fileBlock ? '/csv' : '') + '/' + folderName + (fileBlock ? '_' + (CGID_MAX_INDEX + 1) : '') + '_clean.csv';
     try {
         const files = fileBlock ? fileBlock : fs.readdirSync(INPUT_FOLDER).filter(file => file.endsWith('.csv'));
@@ -4025,7 +4026,7 @@ async function processCSVFiles(folderName, fileBlock) {
 
             if (!currentCategory) {
                 // Keep rows with empty categories, or skip them based on your preference
-                // uniqueRows.push(currentRow);
+                uniqueRows.push(currentRow);
                 continue;
             }
 
@@ -4108,8 +4109,8 @@ async function processCSVFiles(folderName, fileBlock) {
     }
 }
 
-const CGID_INDEX_START = 1;
-const CGID_INDEX_END = 1;
+let CGID_INDEX_START = 112;
+let CGID_INDEX_END = 112;
 const CGID_MAX_SIZE = 0;   // Example: 1: 200, 2-n: 2 csv files per operation (0 = all files in one operation)
 const CGID_MAX_INDEX = 0;  // INDEX of BLOCK (CGID_MAX_SIZE > 0)
 
