@@ -3,10 +3,11 @@ const readline = require('readline');
 const path = require('path');
 
 // --- KONFIGURATION ---
-const INPUT_FILE = 'ihre_datei.csv'; // Name Ihrer großen CSV-Datei
 const MAX_LINES_PER_FILE = 999;      // Maximale Zeilenanzahl pro Teil (exklusive Header)
 const INPUT_FOLDER_BLOCK_NAME = '3801-3891';
 const DELETE_PARTS = false;
+const DELETE_PARTS_IF_ONLY_ONE = false;
+const CREATE_ADD_FILE = true;
 // ---------------------
 
 const GCID = [
@@ -3944,8 +3945,43 @@ async function splitCsv(folderName) {
     const INPUT_FOLDER = './data/' + INPUT_FOLDER_BLOCK_NAME + '/' + folderName; // Change to your folder path
     const OUTPUT_FILE_FOLDER = INPUT_FOLDER + '/parts/';
     const INPUT_FILE =  INPUT_FOLDER + '/' + folderName + '_clean.csv';
-1
+
     if (folderName === 'traffic_officer_3576') {
+        return;
+    }
+
+    if (DELETE_PARTS_IF_ONLY_ONE) {
+        try {
+            const files = fs.readdirSync(OUTPUT_FILE_FOLDER).filter(file => file.endsWith('.csv'));
+            console.log(`Found ${files.length} CSV files. Reading data...`);
+
+            if (files && files.length === 1) {
+                fs.rmSync(INPUT_FOLDER + '/parts', { recursive: true, force: true });
+            }
+        } catch (error) {
+            // do nothing
+        }
+
+        return;
+    }
+
+    if (CREATE_ADD_FILE) {
+        if (fs.existsSync(OUTPUT_FILE_FOLDER)) {
+            const files = fs.readdirSync(OUTPUT_FILE_FOLDER).filter(file => file.endsWith('.csv'));
+            console.log(`Found ${files.length} CSV files. Reading data...`);
+
+            if (files && files.length > 1) {
+                for (const file of files) {
+                    const filePath = path.join(OUTPUT_FILE_FOLDER, file);
+
+                    fs.copyFileSync(filePath, INPUT_FOLDER + '/parts/' + path.parse(file).name + '_add.csv');
+                }
+            }
+            
+        } else {
+            fs.copyFileSync(INPUT_FILE, INPUT_FOLDER + '/' + folderName + '_add.csv');
+        }
+
         return;
     }
 
